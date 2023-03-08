@@ -229,8 +229,16 @@ class TestFatturaPrivati12(TestFatturaMixin, TestCase):
                 prezzo_unitario="25.50", aliquota_iva="22.00")
 
         body.dati_beni_servizi.add_dettaglio_linee(
+                codice_articolo=[a38.CodiceArticolo(
+                    codice_tipo="Codice Art.",
+                    codice_valore="AR001",
+                )],
                 descrizione="Other item", quantita=1, unita_misura="kg",
-                prezzo_unitario="15.50", aliquota_iva="22.00")
+                prezzo_unitario="15.50132421", aliquota_iva="22.00")
+        
+        body.dati_beni_servizi.add_dettaglio_linee(
+                descrizione="Other item 2", quantita=1.00000101, unita_misura="",
+                prezzo_unitario=0, aliquota_iva="22.00")
 
         body.dati_beni_servizi.build_dati_riepilogo()
         body.build_importo_totale_documento()
@@ -277,6 +285,10 @@ class TestFatturaPrivati12(TestFatturaMixin, TestCase):
             b'<ns0:FatturaElettronica xmlns:ns0="http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.2"'
             b' versione="FPR12">', xml)
         self.assertIn(b'<FormatoTrasmissione>FPR12</FormatoTrasmissione>', xml)
+        self.assertIn(b'<PrezzoUnitario>15.50132421</PrezzoUnitario>', xml)
+        self.assertIn(b'<PrezzoUnitario>0.00000000</PrezzoUnitario>', xml)
+        self.assertIn(b'<Quantita>1.00000101</Quantita>', xml)
+        self.assertIn(b'<CodiceValore>AR001</CodiceValore>', xml)
 
     def test_to_python(self):
         f = self.build_sample()
