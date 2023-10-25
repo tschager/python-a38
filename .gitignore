@@ -7,3 +7,5 @@
 /dist
 /htmlcov
 a38.egg-info/
+/venv
+settings.json
